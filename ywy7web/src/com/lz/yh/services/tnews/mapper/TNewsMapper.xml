@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.tnews.mapper.TNewsMapper">
+	<!-- 查询新闻 -->
+	<select id="queryTnews" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+			ID id
+			,TITLE title
+			,T_TITLE ttile
+			,CONTENT content
+			,T_CLASS tclass
+			,T_TYPE ttype
+			,CREATE_TIME createTime
+			,PRIORITY priority
+			,CLICK_COUNT clickCount
+			,T_IMG timg
+			,T_LINK tlink
+			,GAME_NAME gameName
+			,GAME_TYPE gameType
+			,VIDEO_LINK videoLink
+			,COUNTRY_TYPE countryType
+		FROM t_news tn
+		<where>
+			<if test="id != null and id !=''">
+				AND ID = #{id}
+			</if>
+			<if test="tType != null and tType !=''">
+				AND T_TYPE=#{tType}
+			</if>
+			<if test="gameName != null and gameName !=''">
+				AND GAME_NAME=#{gameName}
+			</if>
+		</where>
+		<if test="order != null and order !=''" >
+			ORDER BY ${order}
+		</if>
+		LIMIT 0, ${perNumber}
+	</select>
+	<!-- 查询新闻 -->
+	<select id="queryNews" resultType="java.util.Map">
+		select
+			id, title, t_img timg, create_time createTimeStr, CLICK_COUNT clickCount, T_TITLE ttitle 
+		from t_news
+		where 1=1 
+		<if test="tType != null and tType != ''">
+			and T_TYPE = #{tType}
+		</if>
+		<if test="order != null and order != ''">
+			order by ${order}
+		</if>
+		limit 0, ${perNumber}
+	</select>
+	<!--  -->
+	<select id="getZxType" resultType="java.util.Map">
+		SELECT T_TYPE tType from t_news WHERE ID = #{id}
+	</select>
+	<update id="updateTnewClickCount" parameterType="java.util.Map">
+		UPDATE t_news SET CLICK_COUNT = CLICK_COUNT+1
+		WHERE id = #{id};
+	</update>
+	
+	
+	<!-- 查询第一聚焦总记录数-->
+	<select id="querytotalCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		SELECT count(*) FROM t_news tn
+		<if test="ttype != null and ttype !=''" >
+			WHERE T_TYPE = #{ttype}
+		</if>
+		<if test="tType != null and tType !=''" >
+			WHERE T_TYPE = #{tType}
+		</if>
+		<if test="countryType != null and countryType !=''" >
+			WHERE COUNTRY_TYPE = #{countryType}
+		</if>
+		<if test="sortField != null and sortField !=''" >
+			ORDER BY ${sortField} ${sortOrder}
+		</if>
+		<if test="startRecordNum != null and startRecordNum !=''" >
+			LIMIT ${startRecordNum} , ${perNumber}
+		</if>
+	</select>
+	<!-- 查询第一焦聚信息 -->
+	<select id="queryfirstFouceLimit" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT 
+			ID id
+			,TITLE title
+			,T_TITLE ttitle
+			,CONTENT content
+			,T_CLASS tclass
+			,T_TYPE ttype
+			,CREATE_TIME createTime
+			,CONVERT(CREATE_TIME USING UTF8) createTimeStr
+			,PRIORITY priority
+			,CLICK_COUNT clickCount
+			,T_IMG timg
+			,T_LINK tlink
+			,GAME_NAME gameName
+			,GAME_TYPE gameType
+			,VIDEO_LINK videoLink
+			,COUNTRY_TYPE countryType
+		FROM t_news tn
+		<if test="ttype != null and ttype !=''" >
+				WHERE T_TYPE = #{ttype}
+		</if>
+		<if test="tType != null and tType !=''" >
+				WHERE T_TYPE = #{tType}
+		</if>
+		<if test="countryType != null and countryType !=''" >
+				WHERE COUNTRY_TYPE = #{countryType}
+		</if>
+		<if test="sortField != null and sortField !=''" >
+				ORDER BY ${sortField} ${sortOrder}
+		</if>
+		<if test="startRecordNum != null and startRecordNum !=''" >
+				LIMIT ${startRecordNum} , ${perNumber}
+		</if>
+	</select>
+	
+	<!-- 查询新闻表总记录数 -->
+	<select id="queryTNewsCount" resultType="java.util.Map">
+		select 
+			count(1) count 
+		from t_news 
+		where 1=1 
+			and t_type = #{tType}
+	</select>
+	
+	<!-- 查询新闻表（分页） -->
+	<select id="queryTNewsPage" resultType="java.util.Map">
+		select 
+			id, title, t_img timg, create_time createTimeStr, t_title ttitle 
+		from t_news 
+		where 1=1 
+		<if test="tType != null and tType != 0">
+			and t_type = #{tType}
+		</if>
+		<if test="order != null and order != ''">
+			order by ${order} 
+		</if>
+		limit ${startRecordNum}, ${perNumber}
+	</select>
+	
+	<!-- 查询产业资讯-->
+	<select id="queryCYZXLimit" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT 
+			ID id
+			,TITLE title
+			,T_TITLE ttitle
+			,CONTENT content
+			,T_CLASS tclass
+			,T_TYPE ttype
+			,CREATE_TIME createTime
+			,CONVERT(CREATE_TIME USING UTF8) createTimeStr
+			,PRIORITY priority
+			,CLICK_COUNT clickCount
+			,T_IMG timg
+			,T_LINK tlink
+			,GAME_NAME gameName
+			,GAME_TYPE gameType
+			,VIDEO_LINK videoLink
+			,COUNTRY_TYPE countryType
+		FROM t_news tn
+		<if test="ttype != null and ttype !=''" >
+			WHERE T_TYPE = #{ttype}
+		</if>
+		<if test="tType != null and tType !=''" >
+				WHERE T_TYPE = #{tType}
+		</if>
+		<if test="sortField != null and sortField !=''" >
+			ORDER  BY  ${sortField} ${sortOrder}
+		</if>
+		<if test="startRecordNum != null and startRecordNum !=''" >
+			LIMIT ${startRecordNum} , ${perNumber}
+		</if>
+	</select>
+</mapper> 

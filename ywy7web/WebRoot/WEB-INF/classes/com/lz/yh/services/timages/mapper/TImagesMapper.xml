@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.timages.mapper.TImagesMapper">
+	<!-- 查询攻略首页顶部图片 -->
+	<select id="queryGlTopImg" resultType="java.util.Map">
+		SELECT 
+			ID id
+			,T_URL turl
+			,T_TYPE ttype
+			,T_DESC tdesc
+			,T_ID tid
+			,T_INDEX tindex
+			,T_LINK tlink
+			,CONTENT content
+			,T_WEIGHT tweight
+			,T_AGE tage
+			,T_HEIGHT theight
+			,T_NAME tname
+			,T_MEASURE tmeasure
+			,T_SMALL_URL tsmallUrl
+		FROM t_images
+		WHERE t_images.T_TYPE = 8
+		ORDER BY t_images.T_INDEX
+	</select>
+	<!-- 获取图片 -->
+	<select id="querytImages" resultType="java.util.Map">
+		select 
+			id, T_INDEX tindex, T_URL turl, T_DESC tdesc, T_LINK tlink, content
+		from T_IMAGES where 1=1 
+		<if test="tType != null and tType != ''">
+			and T_TYPE = #{tType}
+		</if>
+		<if test="id != null and id != ''">
+			and ID = #{id}
+		</if>
+		<if test="group != null and group != ''">
+			group by ${group}
+		</if>
+		<if test="order != null and order != ''">
+			order by ${order}
+		</if>
+		<if test="perNumber != null and perNumber != ''">
+			limit 0, ${perNumber}
+		</if>
+	</select>
+	<!-- 查询新游首页顶部图片 -->
+	<select id="queryXyTopImg" resultType="java.util.Map">
+		SELECT *
+		FROM t_images
+		WHERE t_images.T_TYPE = 9
+		ORDER BY t_images.T_INDEX
+	</select>
+	<!-- 查询资讯首页顶部图片 -->
+	<select id="queryZxTopImg" resultType="java.util.Map">
+		SELECT 
+			ID id
+			,T_URL turl
+			,T_TYPE ttype
+			,T_DESC tdesc
+			,T_ID tid
+			,T_INDEX tindex
+			,T_LINK tlink
+			,CONTENT content
+			,T_WEIGHT tweight
+			,T_AGE tage
+			,T_HEIGHT theight
+			,T_NAME tname
+			,T_MEASURE tmeasure
+			,T_SMALL_URL tsmallUrl
+		FROM t_images
+		WHERE t_images.T_TYPE =7
+		ORDER BY t_images.T_INDEX
+	</select>
+</mapper> 

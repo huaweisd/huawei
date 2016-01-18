@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.tproductzq.mapper.TProductZQMapper">
+	<!-- 根据专区类型查询专区下游戏列表 (根据热度倒序排列)-->
+	<select id="queryZqListByType"  resultMap="com.lz.yh.services.tproductopen.mapper.TProductOpenMapper.OneToMany" parameterType="java.util.Map">
+		<![CDATA[
+			SELECT 
+				tp.ID id
+				,tpz.ZQ_TYPE zqType
+				,tpz.IMG_A imgA
+				,tpz.IMG_B imgB
+				,tpz.IMG_C imgC
+				,tpz.IMG_D imgD
+				,tpz.IMG_E imgE
+				,tp.ID productsID
+				,tp.START_TIME startTime
+				,tp.GAME_NAME gameName
+				,tp.GAME_IMG gameImg
+				,tp.GAME_STATE gameState
+				,tp.DOWNLOAD download
+				,tp.PRIORITY priority
+				,tp.CLICK_COUNT clickCount
+				,tp.T_PRICE tprice
+				,tp.T_LANGUAGE tlanguage
+				,tp.T_GROUP tgroup
+				,tp.DOWNLOAD_COUNT downloadCount
+				,tp.ren_qi renQi
+				,tp.ping_lun pingLun
+				,tp.tui_jian tuiJian
+				,tp.GAME_DESC gameDesc
+				,tp.FILE_SIZE fileSize
+				,tp.FIELD1 field1
+				,tp.FIELD2 field2
+				,tp.FIELD3 field3
+				,tp.FIELD4 field4
+				,tp.FIELD5 field5
+				,tpt.PROCDUCTS_TYPE procductsType
+			FROM t_product_zq tpz
+			INNER JOIN t_products tp on tpz.PRODUCTS_ID = tp.ID and tpz.ZQ_TYPE = #{zqType}
+			INNER JOIN t_product_type tpt on tp.ID = tpt.PRODUCTS_ID
+		]]>
+		<if test="sortField != null and sortField !=''" >
+			ORDER BY ${sortField} ${sortOrder}
+		</if>
+	</select>
+	<!-- 热门专区 -->
+	<select id="queryHotArea" resultType="java.util.Map">
+		select
+			id, GAME_NAME gameName, GAME_IMG gameImg, GAME_DESC gameDesc, PACK_NUM packNum, IMG_A imgA, IMG_B imgB, T_TYPE tType, CLICK_COUNT clickCount 
+		from view_product_zq
+		where 1=1 
+		<if test="zqType != null and zqType != ''">
+			and ZQ_TYPE = #{zqType}
+		</if>
+		order by CLICK_COUNT desc
+		<if test="perNumber != null and perNumber != ''">
+			limit 0, ${perNumber}
+		</if>
+	</select>
+</mapper> 

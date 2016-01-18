@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.timagesdepict.mapper.TImagesDepictMapper">
+	<select id="queryTImagesDepict" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT *  FROM T_IMAGES_DEPICT WHERE T_TYPE_ID = #{tTypeId}
+		UNION ALL
+		SELECT ID, T_URL,NULL AS T_DESC,NULL AS CONTENT,NULL AS T_TYPE_ID , NULL AS PRIORITY
+		FROM t_images
+		WHERE (SELECT COUNT(*)  FROM T_IMAGES_DEPICT WHERE T_TYPE_ID = #{tTypeId})=0 AND ID =  #{tTypeId}
+	</select>
+</mapper> 

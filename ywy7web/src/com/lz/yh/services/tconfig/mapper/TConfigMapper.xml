@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.tconfig.mapper.TConfigMapper">
+	<!-- 搜索条件 -->
+	<select id="querySearch" resultType="java.util.Map">
+		select id, t_key tkey, t_value tvalue, t_group tgroup, t_group_name tgroupname from t_config where t_group in ('PRICE_TYPE', 'OS_TYPE', 'LANGUAGE_TYPE', 'GAME_TYPE') order by t_group, t_key*1 asc
+	</select>
+	<select id="queryTconfigByTgroup" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT 
+			tc.ID id,
+			tc.T_KEY tkey,
+			tc.T_VALUE tvalue, 
+			tc.T_GROUP tgroup,
+			tc.T_GROUP_NAME tgourpName
+		FROM 
+			t_config tc
+		<where>
+			<if test="tgroup != null and tgroup != ''">
+					AND tc.T_GROUP = #{tgroup}
+			</if>
+		</where>
+	</select>
+</mapper> 

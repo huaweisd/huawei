@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.tproducts.mapper.TProductsMapper">
+	<!-- 根据类型(如 单机)获取游戏列表 (根据热度倒序排列) -->
+	<select id="queryGamesByType"  resultMap="com.lz.yh.services.tproductopen.mapper.TProductOpenMapper.OneToMany" parameterType="java.util.Map">
+		<![CDATA[
+			SELECT 
+				tp.ID id
+				,tp.START_TIME startTime
+				,RUN_OS runOs
+				,tp.T_TYPE tType
+				,CONVERT(tp.START_TIME USING UTF8) startTimeStr
+				,tp.OPERATORS opeartors
+				,tp.GAME_NAME gameName
+				,tp.GAME_IMG gameImg
+				,tp.T_TYPE gameType
+				,tp.RUN_OS gameSys
+				,tp.GAME_STATE gameState
+				,tp.DOWNLOAD download
+				,tp.PRIORITY priority
+				,tp.CLICK_COUNT clickCount
+				,tp.T_PRICE tprice
+				,tp.T_LANGUAGE tlanguage
+				,tp.T_GROUP tgroup
+				,tp.DOWNLOAD_COUNT downloadCount
+				,tp.ren_qi renQi
+				,tp.ping_lun pingLun
+				,tp.tui_jian tuiJian
+				,tp.GAME_DESC gameDesc
+				,tp.FILE_SIZE fileSize
+				,tp.FIELD1 field1
+				,tp.FIELD2 field2
+				,tp.FIELD3 field3
+				,tp.FIELD4 field4
+				,tp.FIELD5 field5
+				,tpz.IMG_A
+				,tpz.IMG_B
+				,tpz.IMG_C
+				,tpz.IMG_D
+				,tpz.IMG_E
+				,tp.APIC
+				,tp.IPIC
+			FROM t_products tp
+			INNER JOIN t_product_zq tpz on tp.ID = tpz.PRODUCTS_ID AND tpz.ZQ_TYPE IS NULL
+		]]>
+		<where>
+			<if test="id != null and id !=''">
+				and tp.ID = #{id}
+			</if>
+			<if test="tgroup != null and tgroup !=''">
+				and tp.T_GROUP = #{tgroup}
+			</if>
+			<if test="tGroup != null and tGroup !=''">
+				and tp.T_GROUP = #{tGroup}
+			</if>
+		</where>
+		GROUP BY tp.ID
+		<include refid="com.lz.yh.services.tproductopen.mapper.TProductOpenMapper.orderAndLimit"></include>
+	</select>
+	<update id="updateGameClickCount" parameterType="java.util.Map">
+		UPDATE t_products SET CLICK_COUNT = CLICK_COUNT+1
+		WHERE id = #{id};
+	</update>
+	<select id="queryGamesById" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT 
+				tp.ID id
+				,tp.START_TIME startTime
+				,RUN_OS runOs
+				,tp.T_TYPE tType
+				,CONVERT(tp.START_TIME USING UTF8) startTimeStr
+				,tp.OPERATORS opeartors
+				,tp.GAME_NAME gameName
+				,tp.GAME_IMG gameImg
+				,tp.T_TYPE gameType
+				,tp.RUN_OS gameSys
+				,tp.GAME_STATE gameState
+				,tp.DOWNLOAD download
+				,tp.PRIORITY priority
+				,tp.CLICK_COUNT clickCount
+				,tp.T_PRICE tprice
+				,tp.T_LANGUAGE tlanguage
+				,tp.T_GROUP tgroup
+				,tp.DOWNLOAD_COUNT downloadCount
+				,tp.ren_qi renQi
+				,tp.ping_lun pingLun
+				,tp.tui_jian tuiJian
+				,tp.GAME_DESC gameDesc
+				,tp.FILE_SIZE fileSize
+				,tp.FIELD1 field1
+				,tp.FIELD2 field2
+				,tp.FIELD3 field3
+				,tp.FIELD4 field4
+				,tp.FIELD5 field5
+				,tp.APIC
+				,tp.IPIC
+			FROM t_products tp
+			<where>
+				<if test="id != null">
+					AND tp.ID = #{id}
+				</if>
+			</where>
+			GROUP BY tp.ID
+	</select>
+	
+	
+	<!-- 查询排行榜 -->
+	<select id="querySingleRank" resultType="java.util.Map">
+		select
+			tp.id, tp.GAME_NAME gameName, tp.GAME_IMG gameImg, tp.FILE_SIZE fileSize, tp.CLICK_COUNT clickCount, 
+			tp.START_TIME startTimeStr, 
+			(SELECT tc.T_VALUE FROM t_config tc WHERE tc.T_KEY = tpo.OS_TYPE AND T_GROUP = 'OS_TYPE') osTypes, 
+			(SELECT tc.T_VALUE FROM t_config tc WHERE tc.T_KEY = tpt.PROCDUCTS_TYPE AND T_GROUP = 'GAME_TYPE') procductsTypes, 
+			(SELECT tc.T_VALUE FROM t_config tc WHERE tc.T_KEY = tp.T_LANGUAGE AND T_GROUP = 'LANGUAGE_TYPE') tLanguage, 
+			(SELECT tc.T_VALUE FROM t_config tc WHERE tc.T_KEY = tp.T_PRICE AND T_GROUP = 'PRICE_TYPE') tPrice, 		
+			(SELECT tc.T_VALUE FROM t_config tc WHERE tc.T_KEY = tpts.PROD_TEST_TYPE AND T_GROUP = 'TEST_STATE') prodTestType 
+		from t_products tp
+		LEFT JOIN t_product_os tpo ON tpo.PRODUCTS_ID = tp.id 
+		LEFT JOIN t_product_type tpt ON tpt.PRODUCTS_ID = tp.id 
+		LEFT JOIN t_product_test tpts ON tpts.PRODUCTS_ID = tp.id 
+		where 1=1 
+		<if test="tGroup != null and tGroup != ''">
+			and T_GROUP = #{tGroup}
+		</if>
+		<if test="gameState != null and gameState != ''">
+			and GAME_STATE = #{gameState}
+		</if>
+		GROUP BY tp.GAME_NAME 
+		<if test="order != null and order != ''">
+			order by ${order}
+		</if>
+		limit 0, ${perNumber}
+	</select>
+	
+	<!-- 查询排行榜 -->
+	<select id="queryGamesRanks" resultType="java.util.Map">
+		SELECT 
+				tp.ID id
+				,tp.START_TIME startTime
+				,CONVERT(tp.START_TIME USING UTF8) startTimeStr
+				,tp.OPERATORS operators
+				,tp.GAME_NAME gameName
+				,tp.GAME_IMG gameImg
+				,(SELECT tc.T_VALUE FROM t_config tc WHERE tc.T_KEY = tpt.PROCDUCTS_TYPE AND T_GROUP = 'GAME_TYPE') procductsTypes
+				,tp.GAME_STATE gameState
+				,tp.DOWNLOAD download
+				,tp.PRIORITY priority
+				,tp.CLICK_COUNT clickCount
+				,tp.T_PRICE tprice
+				,tp.T_LANGUAGE tlanguage
+				,tp.T_GROUP tgroup
+				,tp.DOWNLOAD_COUNT downloadCount
+				,tp.ren_qi renQi
+				,tp.ping_lun pingLun
+				,tp.tui_jian tuiJian
+				,tp.GAME_DESC gameDesc
+				,tp.FILE_SIZE fileSize
+				,tp.FIELD1 field1
+				,tp.FIELD2 field2
+				,tp.FIELD3 field3
+				,tp.FIELD4 field4
+				,tp.FIELD5 field5
+				,tp.APIC apic 
+				,tp.IPIC ipic
+			FROM t_products tp
+			LEFT JOIN t_product_type tpt ON tpt.PRODUCTS_ID = tp.id 
+		<if test="tGroup != null and tGroup != ''">
+			and T_GROUP = #{tGroup}
+		</if>
+		<if test="gameState != null and gameState != ''">
+			and GAME_STATE = #{gameState}
+		</if>
+		GROUP BY tp.GAME_NAME 
+		<if test="order != null and order != ''">
+			order by ${order}
+		</if>
+		limit 0, ${perNumber}
+	</select>
+	
+	<!-- 根据name匹配相关游戏 -->
+	<select id="queryPruductByGameName" resultType="java.util.Map">
+		SELECT 
+			id, GAME_NAME gameName, GAME_IMG gameImg, FIELD3 bbh, T_TYPE tType, RUN_OS runOs, FIELD2 kfs, FILE_SIZE fileSize, GAME_DESC gameDesc 
+		FROM t_products 
+		WHERE GAME_NAME = #{keyName}
+	</select>
+</mapper> 

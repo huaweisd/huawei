@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.tadvert.mapper.TAdvertMapper">
+	<!-- 查询广告信息  -->
+	<select id="queryAdvertByType" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT 
+			ID id
+			,START_TIME starttime
+			,T_IMG timg
+			,T_TYPE ttype
+			,T_URL turl
+			,T_TITLE ttitle
+			,T_STATUS tstatus
+			,T_INDEX tindex
+			,SHOW_TIME showtime
+			,END_TIME endtime
+			,T_OPTION1_IMG toption1img
+			,OPTION1_URL	option1url
+			,OPTION1_SHOW_TIME option1showtime
+			,OPTION1_END_TIME option1endtime
+			,T_OPTION2_IMG toption2img
+			,OPTION2_URL	option2url
+			,OPTION2_SHOW_TIME option2showtime
+			,OPTION2_END_TIME option2endtime
+			,T_FLAG tflag
+		FROM t_advert ta
+		<if test="ttype != null and ttype !=''">
+			WHERE T_TYPE=#{ttype}
+		</if>
+		<if test="tType != null and tType !=''">
+			WHERE T_TYPE=#{tType}
+		</if>
+		<if test="sortField != null and sortField !=''" >
+			ORDER BY ${sortField} ${sortOrder}
+		</if>
+	</select>
+	<!-- 广告 -->
+	<select id="querytAdvert" resultType="java.util.Map">
+		select
+		T_TYPE tType,T_INDEX tindex, T_IMG timg, T_URL turl, T_TITLE ttitle
+		from t_advert
+		where 1=1 
+		<if test="tType != null and tType != ''">
+            and T_TYPE = #{tType}
+        </if>
+        
+        <if test="into!= null and into != ''">
+			and T_INDEX in (${into})
+		</if>
+		<if test="order != null and order != ''">
+			order by ${order}
+		</if>
+        LIMIT 0, ${perNumber}
+	</select>
+	<!-- 背景广告 -->
+	<select id="querytBlAdvert" resultType="java.util.Map">
+		select
+		T_TYPE tType,T_INDEX tindex, T_IMG timg, T_URL turl, T_TITLE ttitle
+		from t_advert
+		<if test="ttype != null and ttype !=''">
+			WHERE T_TYPE=#{ttype}
+		</if>
+		<if test="tType != null and tType !=''">
+			WHERE T_TYPE=#{tType}
+		</if>
+		<if test="tindex != null and tindex !=''">
+			and T_INDEX=#{tindex}
+		</if>
+	</select>
+</mapper> 

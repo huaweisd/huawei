@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.tfriendlink.mapper.TFriendLinkMapper">
+	<!-- 友情链接 -->
+	<select id="querytFriendLink" resultType="java.util.Map">
+		select
+			IMG_URL imgUrl, title, TITLE_LINK titleLink
+		from t_friend_link
+		where 1=1
+		<if test="id != null and id !=''">
+			AND T_GROUP = #{tGroup}
+		</if>
+		<if test="order != null and order != ''">
+			order by ${order}
+		</if>
+	</select>
+</mapper> 

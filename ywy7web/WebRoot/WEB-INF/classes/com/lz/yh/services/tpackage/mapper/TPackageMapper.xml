@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.tpackage.mapper.TPackageMapper">
+	<!-- 查询礼包表 -->
+	<select id="queryTPackage" resultType="java.util.Map">
+		select 
+			id, GAME_NAME gameName, t_type tType, PACKAGE_TYPE packageType, T_SYSTEM tsystem, PACKAGE_NAME packageName, T_COUNT tcount, S_COUNT scount, T_IMG timg, IMG_A imgA, IMG_B, IMG_C, IMG_D, IMG_E, T_PRICE tprice, NOW_PRICE nowPrice, CREATE_TIME createTimeStr, TIME_LIMIT timeLimitStr, DATE_FORMAT(TIME_LIMIT,'%Y-%m-%d') endTime, T_URL turl, T_CONTENT tcontent, GAME_TYPE gameType 
+		from t_package 
+		where 1=1 
+		<if test="id != null and id != ''">
+			and ID = #{id}
+		</if>
+		<if test="tType != null and tType != ''">
+			and T_TYPE = #{tType}
+		</if>
+		<if test="priceType != null and priceType != ''">
+			and PRICE_TYPE = #{priceType}
+		</if>
+		<if test="packageType != null and packageType != ''">
+			and PACKAGE_TYPE = #{packageType}
+		</if>
+		<if test="priceStatus != null and priceStatus != ''">
+			and PRICE_STATUS = #{priceStatus}
+		</if>
+		<if test="keyName != null and keyName != ''">
+			and GAME_NAME = #{keyName}
+		</if>
+		<![CDATA[ and DATE_FORMAT(now(),'%Y-%m-%d') < TIME_LIMIT ]]>
+		<if test="order != null and order != ''">
+			order by ${order}
+		</if>
+		limit #{startRecordNum}, #{perNumber}
+	</select>
+	
+	<!-- 查询礼包表总数 -->
+	<select id="queryTPackageCount" resultType="java.util.Map">
+		select 
+			count(1) count 
+		from t_package 
+		where 1=1 
+		<if test="tType != null and tType != ''">
+			and T_TYPE = #{tType}
+		</if>
+		<if test="priceType != null and priceType != ''">
+			and PRICE_TYPE = #{priceType}
+		</if>
+		<if test="packageType != null and packageType != ''">
+			and PACKAGE_TYPE = #{packageType}
+		</if>
+		<if test="priceStatus != null and priceStatus != ''">
+			and PRICE_STATUS = #{priceStatus}
+		</if>
+		<![CDATA[ and DATE_FORMAT(now(),'%Y-%m-%d') < TIME_LIMIT ]]>
+	</select>
+	
+	<!-- 领取礼包码更新礼包表已发放数量 -->
+	<update id="updateTPackageScount" parameterType="java.util.Map">
+		UPDATE t_package SET S_COUNT = S_COUNT + 1 WHERE ID = #{id}
+	</update>
+	
+	<!-- 随机查询礼包码 -->
+	<select id="queryTPackageCode" resultType="java.util.Map">
+		SELECT 
+			id, PACKAGE_CODE packageCode 
+		FROM package_code 
+		WHERE T_STATE = '1' 
+		<if test="packageId != null and packageId != ''">
+			AND PACKAGE_ID = #{packageId}
+		</if>
+		ORDER BY rand() 
+		LIMIT ${perNumber};
+	</select>
+	
+	<!-- 更新礼包码表 -->
+	<update id="updateTPackageCode" parameterType="java.util.Map">
+		UPDATE package_code SET T_STATE = 2, GET_TIME = NOW(), USER_ID = #{userId} WHERE ID = #{id} AND T_STATE = 1
+	</update>
+	
+	<!-- 根据条件查询礼包码表 -->
+	<select id="queryTPackageCodeByParam" resultType="java.util.Map">
+		select 
+			pc.id, PACKAGE_CODE packageCode, DATE_FORMAT(GET_TIME, '%Y-%m-%d') getTime, t1.PACKAGE_NAME packageName 
+		from package_code pc
+		left join t_package t1 on pc.PACKAGE_ID = t1.ID
+		where 1=1 
+		<if test="userId != null and userId != ''">
+			and USER_ID = #{userId}
+		</if>
+		<if test="packageId != null and packageId != ''">
+			and PACKAGE_ID = #{packageId}
+		</if>
+		<if test="order != null and order != ''">
+			order by ${order}
+		</if>
+	</select>
+	
+	<select id="queryTPackageCodeTH" resultType="java.util.Map">
+		SELECT 
+			id, PACKAGE_CODE packageCode 
+		FROM package_code 
+		WHERE T_STATE = '2' 
+		<if test="packageId != null and packageId != ''">
+			AND PACKAGE_ID = #{packageId}
+		</if>
+		ORDER BY rand() 
+		LIMIT ${perNumber};
+	</select>
+	
+	<select id="queryTconfigByTgroup" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT 
+			tc.ID id,
+			tc.T_KEY tkey,
+			tc.T_VALUE tvalue, 
+			tc.T_GROUP tgroup,
+			tc.T_GROUP_NAME tgourpName
+		FROM 
+			t_config tc
+		<where>
+			<if test="tgroup != null and tgroup != ''">
+					AND tc.T_GROUP = #{tgroup}
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryTPackageListByPruductId" resultType="java.util.Map">
+		SELECT 
+			id, GAME_NAME gameName, PACKAGE_NAME packageName, T_COUNT tcount, S_COUNT scount, T_TYPE tType, T_SYSTEM tsystem, T_IMG timg, GAME_TYPE gameType, T_PRICE tprice, TIME_LIMIT timeLimit, NOW_PRICE nowPrice 
+		FROM t_package 
+		WHERE 1=1 
+		<if test="productId != null and productId != ''">
+			AND GAME_NAME = (SELECT GAME_NAME FROM t_products WHERE ID = #{productId})
+		</if>
+		<if test="order != null and order != ''">
+			order by ${order}
+		</if>
+	</select>
+</mapper> 

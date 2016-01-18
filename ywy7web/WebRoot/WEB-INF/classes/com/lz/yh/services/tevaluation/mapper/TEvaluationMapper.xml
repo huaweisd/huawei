@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.tevaluation.mapper.TEvaluationMapper">
+	<select id="queryTevaluationByType" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT 
+			ID id
+			,TITLE title
+			,T_TITLE ttitle
+		 	,CONTENT content
+			,T_CLASS tclass
+			,T_TYPE	ttype
+			,CREATE_TIME createTime		
+			,CONVERT(CREATE_TIME USING utf8) createTimeStr
+			,PRIORITY priority
+			,CLICK_COUNT clickCount
+			,T_IMG timg
+			,T_LINK tlink
+			,GAME_NAME gameName
+			,GAME_TYPE gameType
+			,ren_qi renQi
+			,ping_lun pingLun
+			,tui_jian tuiJian
+			,author author
+		FROM t_evaluation te
+		<where>
+			<if test="id != null and id !=''">
+				AND ID = #{id}
+			</if>
+			<if test="ttype != null and ttype !=''">
+				AND T_TYPE=#{ttype}
+			</if>
+			<if test="tType != null and tType !=''">
+				AND T_TYPE=#{tType}
+			</if>
+		</where>
+		<include refid="com.lz.yh.services.tproductopen.mapper.TProductOpenMapper.orderAndLimit" ></include>
+	</select>
+	<select id="queryTevaluationByTypeCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		SELECT 
+			count(1)
+		FROM t_evaluation te
+		<if test="ttype != null and ttype !=''">
+			WHERE T_TYPE=#{ttype}
+		</if>
+		<if test="tType != null and tType !=''">
+			WHERE T_TYPE=#{tType}
+		</if>
+	</select>
+	<!-- 查询评测 -->
+	<select id="queryEvaluation" resultType="java.util.Map">
+		select
+			id, T_IMG timg, title, GAME_NAME gameName, GAME_TYPE gameType, T_TITLE ttitle, CREATE_TIME createTimeStr, ren_qi renQi, ping_lun pingLun, tui_jian tuiJian, CONTENT content 
+		from t_evaluation
+		WHERE 1=1 
+		<if test="tType != null and tType != ''">
+			and T_TYPE = #{tType}
+		</if>
+		<if test="id != null and id != ''">
+			and ID = #{id}
+		</if>
+		<if test="order != null and order != ''">
+			order by ${order}
+		</if>
+		limit 0, ${perNumber}
+	</select>
+	<!-- 查询新游评测列表(前10条) -->
+	<select id="queryNewGameTestLimit" resultType="java.util.Map">
+			SELECT *
+			FROM t_evaluation te
+			WHERE te.T_TYPE = 1
+			ORDER BY te.PRIORITY ,te.CREATE_TIME desc
+			LIMIT 0,10
+	</select>
+	
+	<!-- 查询手游评测总记录数-->
+	<select id="querySYPCtotalCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select  count(*)  from  T_EVALUATION te 
+		<if test="ttype != null and ttype !=''" >
+			WHERE T_TYPE = #{ttype}
+		</if>
+		<if test="tType != null and tType !=''" >
+			WHERE T_TYPE = #{tType}
+		</if>
+		<if test="sortField != null and sortField !=''" >
+			ORDER BY ${sortField} ${sortOrder}
+		</if>
+		<if test="startRecordNum != null and startRecordNum !=''" >
+			LIMIT ${startRecordNum} , ${perNumber}
+		</if>
+	</select>
+	
+	<!-- 查询手游评测-->
+	<select id="querySYPCLimit" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT 
+			ID id
+			,TITLE title
+			,T_TITLE ttitle
+			,CONTENT content
+			,T_CLASS tclass
+			,T_TYPE ttype
+			,CREATE_TIME createTime
+			,CONVERT(CREATE_TIME USING UTF8) createTimeStr
+			,PRIORITY priority
+			,CLICK_COUNT clickCount
+			,T_IMG timg
+			,T_LINK tlink
+			,GAME_NAME gameName
+			,GAME_TYPE gameType
+			,ren_qi renqi
+			,ping_lun pinglun
+			,tui_jian tuijian
+			,author tauthor
+		FROM T_EVALUATION te
+		<if test="ttype != null and ttype !=''" >
+			WHERE T_TYPE = #{ttype}
+		</if>
+		<if test="sortField != null and sortField !=''" >
+			ORDER BY ${sortField} ${sortOrder}
+		</if>
+		<if test="startRecordNum != null and startRecordNum !=''" >
+			LIMIT ${startRecordNum} , ${perNumber}
+		</if>
+	</select>
+	
+	<update id="updateEvaluationClickCount" parameterType="java.util.Map">
+		UPDATE T_EVALUATION SET CLICK_COUNT = CLICK_COUNT+1
+		WHERE id = #{id};
+	</update>
+</mapper> 

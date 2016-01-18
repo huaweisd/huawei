@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.tproductos.mapper.TProductOsMapper">
+	<!-- 搜索游戏列表 -->
+	<select id="queryGames" resultType="java.util.Map">
+		select id, GAME_NAME gameName, GAME_IMG gameImg from view_product_os_type 
+		where 1=1 
+		<if test="procductsType != null and procductsType != ''">
+			and PROCDUCTS_TYPE = #{procductsType}
+		</if>
+		<if test="osType != null and osType != ''">
+			and OS_TYPE = #{osType}
+		</if>
+		<if test="tPrice != null and tPrice != ''">
+			and T_PRICE = #{tPrice}
+		</if>
+		<if test="tLanguage != null and tLanguage != ''">
+			and T_LANGUAGE = #{tLanguage}
+		</if>
+		group by GAME_NAME 
+		order by PRIORITY , START_TIME DESC 
+		limit 0, 17
+	</select>
+	<!-- 搜索游戏列表总数 -->
+	<select id="queryGamesCount" resultType="java.util.Map">
+		select count(1) count from (select 
+			ID
+		from view_product_os_type t1
+		where 1=1 
+		<if test="procductsType != null and procductsType != ''">
+			and t1.PROCDUCTS_TYPE = #{procductsType}
+		</if>
+		<if test="osType != null and osType != ''">
+			and t1.OS_TYPE = #{osType}
+		</if>
+		<if test="tPrice != null and tPrice != ''">
+			and t1.T_PRICE = #{tPrice}
+		</if>
+		<if test="tLanguage != null and tLanguage != ''">
+			and t1.T_LANGUAGE = #{tLanguage}
+		</if>
+		group by t1.GAME_NAME) t2
+	</select>
+	<!-- 搜索游戏列表（分页） -->
+	<select id="queryGamesPage" resultType="java.util.Map">
+		select 
+			id, GAME_NAME gameName, GAME_IMG gameImg 
+		from view_product_os_type 
+		where 1=1 
+		<if test="procductsType != null and procductsType != ''">
+			and PROCDUCTS_TYPE = #{procductsType}
+		</if>
+		<if test="osType != null and osType != ''">
+			and OS_TYPE = #{osType}
+		</if>
+		<if test="tPrice != null and tPrice != ''">
+			and T_PRICE = #{tPrice}
+		</if>
+		<if test="tLanguage != null and tLanguage != ''">
+			and T_LANGUAGE = #{tLanguage}
+		</if>
+		group by GAME_NAME 
+		<if test="order != null and order != ''">
+			order by ${order}
+		</if>
+        limit ${startRecordNum}, ${perNumber}
+	</select>
+	<select id="queryProductOsByProductsId" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+			tpo.OS_TYPE osType
+		FROM T_PRODUCT_OS tpo
+		<where>
+			<if test="id != null">
+				AND tpo.PRODUCTS_ID = #{id}
+			</if>
+		</where>
+	</select>
+</mapper> 

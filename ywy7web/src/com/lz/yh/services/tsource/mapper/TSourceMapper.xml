@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.tsource.mapper.TSourceMapper">
+	<!-- 查询对应游戏资料 -->
+	<select id="queryTSOURCE" resultType="java.util.Map">
+		select
+			ID, T_URL turl, T_TITLE ttitle
+        from t_source
+        where 1=1 
+        <if test="gameName != null and gameName != ''">
+            and GAME_NAME = #{gameName}
+        </if>
+        order by T_TITLE
+        limit 0, 6
+	</select>
+</mapper> 

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.tuser.mapper.TUserMapper">
+	<select id="queryTUser" resultType="java.util.Map">
+		select 
+			ID id,
+			LOGIN_NAME loginName,
+			NAME name,
+			TEL tel,
+			PHONE phone,
+			ADDRESS address,
+			ZIP_CODE zipCode,
+			ICN icn,
+			TITLE title,
+			T_RANK trank,
+			MEDALS medals,
+			INTEGRAL integral,
+			USER_TYPE userType,
+			G_COIN gcoin,
+			N_COIN ncoin,
+			CDAYS cdays,
+			CADAYS cadays,
+			LAST_LOGIN_TIME lastLoginTime,
+			LAST_QD_TIME lastQdTime,
+			T_IMG timg
+		from t_user
+		where 1=1 
+		<if test="loginName != null and loginName != ''">
+			and LOGIN_NAME = #{loginName}
+		</if>
+		<if test="password != null and password != ''">
+			and PASSWORD = #{password}
+		</if>
+		<if test="id != null and id != ''">
+			and ID = #{id}
+		</if>
+		and USER_TYPE = 1
+	</select>
+	
+	<!-- 注册时验证重名，为了防止添加时新用户名与内部员工名相同导致报错，进行全表搜索 -->
+	<select id="queryTUserByRegister" resultType="java.util.Map">
+		select 
+			ID id,
+			LOGIN_NAME loginName,
+			NAME name,
+			TEL tel,
+			PHONE phone,
+			ADDRESS address,
+			ZIP_CODE zipCode,
+			ICN icn,
+			TITLE title,
+			T_RANK trank,
+			MEDALS medals,
+			INTEGRAL integral,
+			USER_TYPE userType,
+			G_COIN gcoin,
+			N_COIN ncoin,
+			CDAYS cdays,
+			CADAYS cadays,
+			LAST_LOGIN_TIME lastLoginTime,
+			LAST_QD_TIME lastQdTime,
+			T_IMG timg
+		from t_user
+		where 1=1 
+		<if test="loginName != null and loginName != ''">
+			and LOGIN_NAME = #{loginName}
+		</if>
+	</select>
+	
+	<update id="updateTUser">
+		update t_user set 
+		${setInfo}
+		where id = #{id}
+	</update>
+	
+	<insert id="insterTUser">
+		INSERT INTO t_user (ID, LOGIN_NAME, PASSWORD, USER_TYPE, DATE_CREATED, LAST_LOGIN_TIME, LAST_QD_TIME, EMAIL) 
+		VALUES(#{id}, #{loginName}, #{password}, 1, NOW(), NOW(), NOW(), #{email})
+	</insert>
+</mapper> 

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.tproducttest.mapper.TProductTestMapper">
+	<!-- 获取游戏开测的列表 -->
+	<select id="queryProductTestTable"  resultMap="com.lz.yh.services.tproductopen.mapper.TProductOpenMapper.OneToMany">
+		SELECT 
+			tp.ID AS id
+			,tpt.PROD_TEST_TYPE prodTestType
+			,tpt.PROD_TEST_TIME prodTestTime
+			,CONVERT(tpt.PROD_TEST_TIME USING UTF8) prodTestTimeStr
+			,tpt.PRODUCTS_ID id
+			,tp.START_TIME startTime
+			,CONVERT(tp.START_TIME USING UTF8) startTimeStr
+			,tp.GAME_NAME gameName
+			,tp.GAME_IMG gameImg
+			,tp.T_TYPE gameType
+			,tp.RUN_OS gameSys
+			,tp.OPERATORS operators
+			,tp.GAME_STATE gameState
+			,tp.DOWNLOAD download
+			,tp.PRIORITY priority
+			,tp.CLICK_COUNT clickCount
+			,tp.T_PRICE tprice
+			,tp.T_LANGUAGE tlanguage
+			,tp.T_GROUP tgroup
+			,tp.DOWNLOAD_COUNT downloadCount
+			,tp.ren_qi renQi
+			,tp.ping_lun pingLun
+			,tp.tui_jian tuiJian
+			,tp.GAME_DESC gameDesc
+			,tp.FILE_SIZE fileSize
+			,tp.FIELD1 field1
+			,tp.FIELD2 field2
+			,tp.FIELD3 field3
+			,tp.FIELD4 field4
+			,tp.FIELD5 field5
+		FROM t_product_test tpt
+		INNER JOIN t_products tp on tpt.PRODUCTS_ID = tp.ID
+		<if test="tgroup != null and tgroup != ''">
+			where tp.T_GROUP = #{tgroup}
+		</if>
+		<if test="tGroup != null and tGroup != ''">
+			where tp.T_GROUP = #{tGroup}
+		</if>
+		<if test="order != null and order !=''" >
+			ORDER BY ${order}
+		</if>
+		LIMIT 0, ${perNumber}
+	</select>
+</mapper> 

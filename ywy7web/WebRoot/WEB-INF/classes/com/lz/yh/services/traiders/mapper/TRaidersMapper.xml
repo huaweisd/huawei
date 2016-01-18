@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.yh.services.traiders.mapper.TRaidersMapper">
+	<update id="updateRaidersClickCount" parameterType="java.util.Map">
+		UPDATE t_raiders SET CLICK_COUNT = CLICK_COUNT+1
+		WHERE id = #{id};
+	</update>
+	<!-- 获取攻略头条 -->
+	<select id="queryTopRaidersLimit" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT 
+			ID id
+			,TITLE title
+			,T_TITLE ttitle
+			,CONTENT content
+			,T_CLASS tclass
+			,T_TYPE ttype
+			,CREATE_TIME createTime
+			,CONVERT(CREATE_TIME USING UTF8) createTimeStr
+			,PRIORITY priority
+			,CLICK_COUNT clickCount
+			,T_IMG timg
+			,T_LINK tlink
+			,GAME_NAME gameName
+			,GAME_TYPE gameType
+		FROM t_raiders tr
+		<where>
+			<if test="id !=null and id != ''">
+				AND ID = #{id}
+			</if>
+			<if test="ttype !=null">
+				AND T_TYPE = #{ttype} 
+			</if>
+			<if test="tType != null" >
+				AND T_TYPE = #{tType}
+			</if>
+		</where>
+		<if test="sortField != null and sortField !=''" >
+			ORDER BY ${sortField} ${sortOrder}
+		</if>
+		<if test="startRecordNum != null and startRecordNum !=''" >
+			LIMIT ${startRecordNum} , ${perNumber}
+		</if>
+	</select>
+	<select id="queryRaidersByType" resultType="java.util.Map">
+		SELECT 
+			ID id
+			,TITLE title
+			,T_TITLE ttitle
+			,CONTENT content
+			,T_CLASS tclass
+			,T_TYPE ttype
+			,CREATE_TIME createTime
+			,CONVERT(CREATE_TIME USING UTF8) createTimeStr
+			,PRIORITY priority
+			,CLICK_COUNT clickCount
+			,T_IMG timg
+			,T_LINK tlink
+			,GAME_NAME gameName
+			,GAME_TYPE gameType
+		FROM t_raiders tr
+		<if test="ttype != null" >
+			WHERE T_TYPE = #{ttype}
+		</if>
+		<if test="tType != null" >
+			WHERE T_TYPE = #{tType}
+		</if>
+		<choose >
+			<when test="sortField != null and sortField !='' and sortOrder != null and sortOrder !=''">
+				ORDER BY ${sortField} ${sortOrder}
+			</when>
+			<when test="sortField != null and sortField !=''">
+				ORDER BY ${sortField}
+			</when>
+		</choose>
+		<if test="startRecordNum != null and startRecordNum !=''" >
+			LIMIT ${startRecordNum} , ${perNumber}
+		</if>
+	</select>
+	<select id="queryRaidersByTypeCount" resultType="java.lang.Integer">
+		SELECT COUNT(1)
+		FROM t_raiders tr
+		<if test="ttype != null and ttype !=''" >
+			WHERE T_TYPE = #{ttype}
+		</if>
+		<if test="tType != null and tType !=''" >
+			WHERE T_TYPE = #{tType}
+		</if>
+	</select>
+	<!-- 查询对应游戏攻略 -->
+	<select id="queryTRAIDERS" resultType="java.util.Map">
+		select
+			id, title, t_title ttitle, CREATE_TIME createTimeStr, T_IMG timg, content, GAME_NAME gameName, CLICK_COUNT clickCount 
+        from t_raiders
+        where 1=1 
+        <if test="gameName != null and gameName != ''">
+            and GAME_NAME = #{gameName}
+        </if>
+        <if test="tType != null and tType != ''">
+            and T_TYPE = #{tType}
+        </if>
+        <if test="id != null and id != ''">
+            and ID = #{id}
+        </if>
+        <if test="startCreateTimeStr != null and startCreateTimeStr != ''">
+            and CREATE_TIME > #{startCreateTimeStr}
+        </if>
+        <if test="order != null and order != ''">
+			order by ${order}
+		</if>
+        limit 0, #{perNumber}
+	</select>
+	
+	<select id="queryTraidersPageCount" resultType="java.util.Map">
+		select count(1) count from t_raiders where 1=1 
+		<if test="tType != null and tType != ''">
+			and T_TYPE = #{tType}
+		</if>
+	</select>
+	
+	<select id="queryTraidersPage" resultType="java.util.Map">
+		select 
+			ID id
+			,TITLE title
+			,T_TITLE ttitle
+			,CONTENT content
+			,T_CLASS tclass
+			,T_TYPE ttype
+			,CREATE_TIME createTime
+			,CONVERT(CREATE_TIME USING UTF8) createTimeStr
+			,PRIORITY priority
+			,CLICK_COUNT clickCount
+			,T_IMG timg
+			,T_LINK tlink
+			,GAME_NAME gameName
+			,GAME_TYPE gameType
+		from t_raiders
+		where 1=1 
+		<if test="tType != null and tType != ''">
+			and T_TYPE = #{tType}
+		</if>
+		<if test="order != null and order != ''">
+			order by ${order}
+		</if>
+		limit #{startRecordNum}, #{perNumber}
+	</select>
+	
+	<update id="updateTraidersClickCount" parameterType="java.util.Map">
+		UPDATE t_raiders SET CLICK_COUNT = CLICK_COUNT+1
+		WHERE id = #{id};
+	</update>
+</mapper> 
