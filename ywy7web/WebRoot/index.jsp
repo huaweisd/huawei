@@ -3,5 +3,5 @@
 <%@ page session="false" %>
 <script type="text/javascript">
 	window.top.parent.location.href = '<c:url value="/index/welcome.htm"/>';
-	/*周润慷0000000000*/
+	/*周润慷0000000000asdfsagsagsf*/
 </script>
