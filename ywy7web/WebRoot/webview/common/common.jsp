@@ -54,4 +54,15 @@
 			$('#' + id).data("plugin_slidesjs").play();
 		})
 	}
+	
+	$.extend({
+		_post : function(url, obj, fn) {
+			$.ajax({
+				type : "POST",
+				url : url,
+				data : obj,
+				success : fn
+			})
+		}
+	})
 </script>
